@@ -1,0 +1,63 @@
+# Nome do fluxo de trabalho -- Workflow Name
+name: Vota Flu Melhor do Mundo
+
+# Evento que aciona o fluxo de trabalho -- Trigger Workflow
+on:
+  # Executa o fluxo de trabalho a cada commit no branch 'main' -- Execute workflow in main
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [ main ]
+    #schedule::
+            #- cron: '0 0 * * *'
+
+# Jobs que compõem o fluxo de trabalho -- Workflow Jobs
+jobs:
+  # Nome do job -- Job Name
+  robot-tests:
+    # Sistema operacional onde o job será executado -- O.S to be executed
+    runs-on: windows-latest
+    # Passos do job -- Job steps
+    steps:
+      # Passo para atualizar o node.js 16 para o run -- Update node.js 16 steps
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      
+          #Install Dependences
+      - name: Install pip dependencies
+        run: |
+            pip install --upgrade pip
+            
+      # Passo para clonar o repositório do GitHub -- Github clone steps
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Passo para instalar o Python -- Python install
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      # Passo para instalar o Robot Framework e a biblioteca Selenium -- Robot & Selenium install update
+      - name: Install Robot Framework and Selenium Library
+        run: pip install robotframework robotframework-seleniumlibrary
+
+      # Passo para executar os testes automatizados com Robot status = 0
+      #Framework - Aut Test Execution using Robot
+      - name: Vota Flu Melhor do Mundo
+        run: python -m robot -x .github/workflows/junit-report.xml --nostatusrc .github/workflows
+        
+      # Status Report - Robot Tests
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-report # Artifact name
+          path: .github/workflows/junit-report.xml # File Path
+      # Junit Result Tests
+      - name: Junit Result Tests
+        uses: mikepenz/action-junit-report@v4
+        with:
+            report_paths: .github/workflows/junit-report.xml
