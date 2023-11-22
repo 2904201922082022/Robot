@@ -33,7 +33,7 @@ TC6 - Votar Fluminense
     Given usuario acessa o site
     and clica no Fluminense
     Then confirma o voto
-TC5 - Votar Fluminense
+TC7 - Votar Fluminense
     Given usuario acessa o site
     and clica no Fluminense
     Then confirma o voto
